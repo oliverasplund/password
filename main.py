@@ -21,41 +21,42 @@ def user(min, max):
 
 def settings(mode, length=None): # mode 1: gen, mode 2: retrieve
     try:
-        with open('settings.json') as file:
+        with open('settings.json', 'r+') as file:
             data = json.load(file)
 
-            if mode == 1:
+            if mode == "gen":
                 return [key for key, value in data['characters'].items() if value == 0], data['length']
             
-            if mode == 2:
+            if mode == "retrieve":
                 return [data['characters']['A'], data['characters']['b'], data['characters']['0'], data['characters']['='], data['xxxx-xxxx'], data['length']] # Versaler, gemener, siffror, tecken, xxxx-xxxx, längd
             
-            if mode == "change_upper":
+            if mode == 1:
                 for key in data['characters']:
                     if key.isupper():
-                        data['characters'][key] = 1 if data['characters']['A'] == 0 else 0
+                        data['characters'][key] = 1 if data['characters']['Z'] == 0 else 0
         
-            if mode == "change_lower":
-                for key in data['charaters']:
+            if mode == 2:
+                for key in data['characters']:
                     if key.islower():
-                        data['characters'][key] = 1 if data['characters']['a'] == 0 else 0
+                        data['characters'][key] = 1 if data['characters']['z'] == 0 else 0
 
-            if mode == "change_integers":
-                for key in data['charaters']:
+            if mode == 3:
+                for key in data['characters']:
                     if isinstance(key, int):
-                        data['characters'][key] = 1 if data['characters']['0'] == 0 else 0
+                        data['characters'][key] = 1 if data['characters']['9'] == 0 else 0
 
-            if mode == "change_special":
+            if mode == 4:
                 for key in data['characters']:
                     if not key.isupper() and not key.islower() and not isinstance(key, int):
-                        data['characters'][key] = 1 if data['characters']['='] == 0 else 0
+                        data['characters'][key] = 1 if data['characters']['_'] == 0 else 0
             
-            if mode == "xxxx-xxxx":
+            if mode == 5:
                 data['xxxx-xxxx'] == 1 if data['xxxx-xxxx'] == 0 else 0
 
-            if mode == "length":
+            if mode == 6:
                 data['length'] == length
 
+            file.seek(0)
             json.dump(data, file, indent=4)
 
 
@@ -84,22 +85,24 @@ def app():
             break
 
         elif user_input == 1:
-            clear_screen
-            print(generate_password(*settings(1)))
+            clear_screen()
+            print(generate_password(*settings("gem")))
         
 
         elif user_input == 2:
             while True:
 
-                retrieve_settings = settings(2)
-                clear_screen
+                retrieve_settings = settings("retrieve")
+                clear_screen()
                 print(f'0: Spara\n1: Versaler\t{"på" if retrieve_settings[0]==0 else "av"}\n2: Gemener\t{"på" if retrieve_settings[1]==0 else "av"}\n3: Siffror\t{"på" if retrieve_settings[2]==0 else "av"}\n4: Tecken\t{"på" if retrieve_settings[3]==0 else "av"}\n5: xxxx-xxxx\t{"på" if retrieve_settings[4]==0 else "av"}\n6: Längd\t{retrieve_settings[5]}')
-                user_input = user(0, 5)
+                user_input = user(0, 6)
 
                 if user_input == 0:
                     break
-                elif user_input == 1:
-                    settings(3)
+                elif user_input == 6:
+                    ...
+                else:
+                    settings(user_input)
                     
 
         
