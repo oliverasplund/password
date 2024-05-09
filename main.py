@@ -6,9 +6,6 @@ def clear_screen():
     system('cls') if name == 'nt' else system('clear')
 
 
-
-
-
 def user(min, max):
     while True:
         try:
@@ -43,8 +40,12 @@ def generate_password(allowed, length, letter_case=None):
 
 def app():
     clear_screen()
+    print(f'1: Generera lösenord\n2: Inställningar')
 
+    if user(1, 2) == 1:
+        print(generate_password(*settings()))
 
-    user(1, 2)
+    else:
+        ...
 
-    generate_password(*settings())
+app()
