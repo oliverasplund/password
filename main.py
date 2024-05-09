@@ -19,17 +19,21 @@ def user(min, max):
 
 
 
-def settings():
+def settings(gen, ):
     try:
         with open('settings.json') as json_file:
             data = json.load(json_file)
-        return [key for key, value in data['characters'].items() if value == 0], data['length']
+        if gen:
+            return [key for key, value in data['characters'].items() if value == 0], data['length']
+        
+
+
     except FileNotFoundError:
         print("Programmet hittar ej rätt fil")
 
 
 
-def generate_password(allowed, length, letter_case=None):
+def generate_password(allowed, length):
     password = ""
 
     for _ in range(length):
@@ -40,12 +44,30 @@ def generate_password(allowed, length, letter_case=None):
 
 def app():
     clear_screen()
-    print(f'1: Generera lösenord\n2: Inställningar')
+    while True:
+        print(f'0: Avsluta\n1: Generera lösenord\n2: Inställningar')
 
-    if user(1, 2) == 1:
-        print(generate_password(*settings()))
+        user_input = user(1,2)
+        if user_input == 0:
+            break
 
-    else:
-        ...
+        elif user_input == 1:
+            clear_screen
+            print(generate_password(*settings(True)))
+        
+
+        elif user_input == 2:
+            while True:
+                clear_screen
+                print(f'0: Spara\n1: Bokstäver\n2: Siffror\n3: Tecken\n4: Längd\n5: xxxx-xxxx')
+                user_input = user(0, 5)
+
+                if user_input == 0:
+                    break
+                elif user_input == 1:
+                    clear_screen
+                    print(f'0: Spara\n1: Gemener\n2: Versaler\n\n')
+
+        
 
 app()
