@@ -25,35 +25,38 @@ def settings(mode, length=None): # mode 1: gen, mode 2: retrieve
             data = json.load(file)
 
             if mode == "gen":
-                return [key for key, value in data['characters'].items() if value == 0], data['length']
+                return [key for key, value in data['characters'].items() if value == 0], data['length'], data['xxxx-xxxx']
             
             if mode == "retrieve":
                 return [data['characters']['A'], data['characters']['b'], data['characters']['0'], data['characters']['='], data['xxxx-xxxx'], data['length']] # Versaler, gemener, siffror, tecken, xxxx-xxxx, längd
             
-            if mode == 1:
+            elif mode == 1:
                 for key in data['characters']:
                     if key.isupper():
                         data['characters'][key] = 1 if data['characters']['Z'] == 0 else 0
         
-            if mode == 2:
+            elif mode == 2:
                 for key in data['characters']:
                     if key.islower():
                         data['characters'][key] = 1 if data['characters']['z'] == 0 else 0
 
-            if mode == 3:
+            elif mode == 3:
                 for key in data['characters']:
-                    if isinstance(key, int):
-                        data['characters'][key] = 1 if data['characters']['9'] == 0 else 0
+                    try:
+                        if isinstance(int(key), int):
+                            data['characters'][key] = 1 if data['characters']['9'] == 0 else 0
+                    except ValueError:
+                        pass
 
-            if mode == 4:
+            elif mode == 4:
                 for key in data['characters']:
                     if not key.isupper() and not key.islower() and not isinstance(key, int):
                         data['characters'][key] = 1 if data['characters']['_'] == 0 else 0
             
-            if mode == 5:
-                data['xxxx-xxxx'] == 1 if data['xxxx-xxxx'] == 0 else 0
+            elif mode == 5:
+                data['xxxx-xxxx'] = 1 if data['xxxx-xxxx'] == 0 else 0
 
-            if mode == 6:
+            elif mode == 6:
                 data['length'] == length
 
             file.seek(0)
@@ -66,27 +69,35 @@ def settings(mode, length=None): # mode 1: gen, mode 2: retrieve
 
 
 
-def generate_password(allowed, length):
+def generate_password(allowed, length, xxxx):
     password = ""
+    if xxxx == 0:
+        while len(password) < length:
+            for _ in range(4 if length-len(password) > 3 else length-len(password)):
+                password += random.choice(allowed)
+            if length != len(password):
+                password += "-" 
 
-    for _ in range(length):
-        password += random.choice(allowed)
+    else:
+        for _ in range(length):
+            password += random.choice(allowed)
 
     return password
 
 
 def app():
-    clear_screen()
     while True:
+        clear_screen()
         print(f'0: Avsluta\n1: Generera lösenord\n2: Inställningar')
 
-        user_input = user(1,2)
+        user_input = user(0,2)
         if user_input == 0:
             break
 
         elif user_input == 1:
             clear_screen()
-            print(generate_password(*settings("gem")))
+            print(generate_password(*settings("gen")))
+            break
         
 
         elif user_input == 2:
