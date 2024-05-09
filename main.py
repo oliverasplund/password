@@ -1,4 +1,8 @@
 import random
+from os import system, name
+def clear_screen():
+    system('cls') if name == 'nt' else system('clear')
+
 
 characters = [("A", 0), ("B", 0), ("C", 0), ("D", 0), ("E", 0), ("F", 0), ("G", 0), ("H", 0), ("I", 0), 
               ("J", 0), ("K", 0), ("L", 0), ("M", 0), ("N", 0), ("O", 0), ("P", 0), ("Q", 0), ("R", 0), 
@@ -19,7 +23,6 @@ def user(min, max):
             continue
 
 
-
 def generate_password(allowed, length, letter_case=None):
     password = ""
 
@@ -29,3 +32,10 @@ def generate_password(allowed, length, letter_case=None):
     return password
 
 
+def app():
+    clear_screen()
+    print(f'1: Generera lösenord\n2: Inställningar')
+
+    user(1, 2)
+
+    generate_password(allowed, length)
