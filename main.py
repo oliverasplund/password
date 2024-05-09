@@ -8,14 +8,15 @@ def clear_screen():
 
 def user(min, max):
     while True:
-        try:
-            user_input = int(input())
+        user_input = input()
 
-            if min <= user_input <= max:
-                return user_input
-
-        except ValueError:
+        if not user_input.isdigit():
             continue
+
+        if min <= int(user_input) <= max:
+            return int(user_input)
+
+
 
 
 
@@ -42,16 +43,16 @@ def settings(mode, length=None): # mode 1: gen, mode 2: retrieve
 
             elif mode == 3:
                 for key in data['characters']:
-                    try:
-                        if isinstance(int(key), int):
-                            data['characters'][key] = 1 if data['characters']['9'] == 0 else 0
-                    except ValueError:
-                        pass
+
+                    if key.isdigit():
+                        data['characters'][key] = 1 if data['characters']['9'] == 0 else 0
+
 
             elif mode == 4:
                 for key in data['characters']:
-                    if not key.isupper() and not key.islower() and not isinstance(key, int):
+                    if not key.isalpha() and not key.isdigit():   
                         data['characters'][key] = 1 if data['characters']['_'] == 0 else 0
+                    
             
             elif mode == 5:
                 data['xxxx-xxxx'] = 1 if data['xxxx-xxxx'] == 0 else 0
