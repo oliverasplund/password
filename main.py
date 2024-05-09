@@ -19,13 +19,45 @@ def user(min, max):
 
 
 
-def settings(gen, ):
+def settings(mode, length=None): # mode 1: gen, mode 2: retrieve
     try:
-        with open('settings.json') as json_file:
-            data = json.load(json_file)
-        if gen:
-            return [key for key, value in data['characters'].items() if value == 0], data['length']
+        with open('settings.json') as file:
+            data = json.load(file)
+
+            if mode == 1:
+                return [key for key, value in data['characters'].items() if value == 0], data['length']
+            
+            if mode == 2:
+                return [data['characters']['A'], data['characters']['b'], data['characters']['0'], data['characters']['='], data['xxxx-xxxx'], data['length']] # Versaler, gemener, siffror, tecken, xxxx-xxxx, längd
+            
+            if mode == "change_upper":
+                for key in data['characters']:
+                    if key.isupper():
+                        data['characters'][key] = 1 if data['characters']['A'] == 0 else 0
         
+            if mode == "change_lower":
+                for key in data['charaters']:
+                    if key.islower():
+                        data['characters'][key] = 1 if data['characters']['a'] == 0 else 0
+
+            if mode == "change_integers":
+                for key in data['charaters']:
+                    if isinstance(key, int):
+                        data['characters'][key] = 1 if data['characters']['0'] == 0 else 0
+
+            if mode == "change_special":
+                for key in data['characters']:
+                    if not key.isupper() and not key.islower() and not isinstance(key, int):
+                        data['characters'][key] = 1 if data['characters']['='] == 0 else 0
+            
+            if mode == "xxxx-xxxx":
+                data['xxxx-xxxx'] == 1 if data['xxxx-xxxx'] == 0 else 0
+
+            if mode == "length":
+                data['length'] == length
+
+            json.dump(data, file, indent=4)
+
 
 
     except FileNotFoundError:
@@ -53,20 +85,22 @@ def app():
 
         elif user_input == 1:
             clear_screen
-            print(generate_password(*settings(True)))
+            print(generate_password(*settings(1)))
         
 
         elif user_input == 2:
             while True:
+
+                retrieve_settings = settings(2)
                 clear_screen
-                print(f'0: Spara\n1: Bokstäver\n2: Siffror\n3: Tecken\n4: Längd\n5: xxxx-xxxx')
+                print(f'0: Spara\n1: Versaler\t{"på" if retrieve_settings[0]==0 else "av"}\n2: Gemener\t{"på" if retrieve_settings[1]==0 else "av"}\n3: Siffror\t{"på" if retrieve_settings[2]==0 else "av"}\n4: Tecken\t{"på" if retrieve_settings[3]==0 else "av"}\n5: xxxx-xxxx\t{"på" if retrieve_settings[4]==0 else "av"}\n6: Längd\t{retrieve_settings[5]}')
                 user_input = user(0, 5)
 
                 if user_input == 0:
                     break
                 elif user_input == 1:
-                    clear_screen
-                    print(f'0: Spara\n1: Gemener\n2: Versaler\n\n')
+                    settings(3)
+                    
 
         
 
